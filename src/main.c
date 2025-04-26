@@ -5,18 +5,20 @@
  */
 
 #include <raylib.h>
+#include <string.h>
 
 #include "assets.h"
 #include "game.h"
 
-int main(void) {
+int main(int argc, char **argv) {
 	const int W = 480, H = 720;
 	InitWindow(W, H, "danmaku");
 	SetTargetFPS(60);
 	assets_Load();
 
+	bool immortal = (argc > 1 && strcmp(argv[1], "immortal") == 0);
 	Game g;
-	danmaku_Init(&g);
+	danmaku_Init(&g, immortal);
 
 	while (!WindowShouldClose()) {
 		float dt = GetFrameTime();

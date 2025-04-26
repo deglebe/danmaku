@@ -9,11 +9,13 @@
 #include <raymath.h>
 #include <stdlib.h>
 
+#include "assets.h"
 #include "bullet.h"
 #include "player.h"
 
 #define BOSS_HP 200
 #define RELOAD_TIME 1.2f /* seconds between bursts */
+#define SHIFT_STEP 40.0f /* pixels to move by when sidestepping */
 
 /* boss-specific implementation of firing patterns */
 static void firePattern(struct Boss *b, int pattern, struct Game *g) {
@@ -50,7 +52,10 @@ static void firePattern(struct Boss *b, int pattern, struct Game *g) {
 
 Boss *boss_Create(Vector2 p) {
 	Boss *b = malloc(sizeof *b);
-	*b = (Boss){.pos = p, .hp = BOSS_HP, .shootTimer = RELOAD_TIME};
+	*b = (Boss){.pos = p,
+	            .hp = BOSS_HP,
+	            .shootTimer = RELOAD_TIME,
+	            .nextShiftHP = BOSS_HP - 30};
 	return b;
 }
 
@@ -60,13 +65,24 @@ void boss_Update(Boss *b, Game *g, float dt) {
 		firePattern(b, GetRandomValue(0, 2), g);
 		b->shootTimer = RELOAD_TIME;
 	}
-	/* TODO: take damage, die, win-state */
+
+	/* sidestep */
+	if (b->hp <= b->nextShiftHP) {
+		float dir = GetRandomValue(0, 1) ? 1.0f : -1.0f;
+		b->pos.x = Clamp(b->pos.x + dir * SHIFT_STEP, 40.0f, 440.0f);
+		b->nextShiftHP -= 30;
+	}
 }
 
 void boss_Draw(Boss *b) {
-	DrawCircleV(b->pos, 14, RED);
+	const float SCALE = 1.0f;
+	DrawTextureEx(TEX_BOSS,
+	              (Vector2){b->pos.x - TEX_BOSS.width * SCALE / 2.0f,
+	                        b->pos.y - TEX_BOSS.height * SCALE / 2.0f},
+	              0.0f, SCALE, WHITE);
+
 	DrawText(TextFormat("HP:%d", b->hp), (int)(b->pos.x - 20),
-	         (int)(b->pos.y - 28), 10, RED);
+	         (int)(b->pos.y - 50), 15, RED);
 }
 
 void boss_Destroy(Boss *b) { free(b); }

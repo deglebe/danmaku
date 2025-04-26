@@ -10,10 +10,13 @@
 #include <raylib.h>
 #include "game.h"
 
+#define BOSS_RADIUS 24.0f
+
 typedef struct Boss {
 	Vector2 pos;
 	int hp;
 	float shootTimer;
+	int nextShiftHP; /* hp threshold for sidestepping */
 } Boss;
 
 Boss *boss_Create(Vector2);

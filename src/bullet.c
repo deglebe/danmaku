@@ -46,11 +46,13 @@ bool bullet_Update(Bullet *b, Game *g, float dt) {
 				return true;
 			}
 		}
-		if (g->boss && Vector2Distance(b->pos, g->boss->pos) < 14.0f) {
+		if (g->boss &&
+		    Vector2Distance(b->pos, g->boss->pos) < BOSS_RADIUS) {
 			g->boss->hp--;
 			if (g->boss->hp <= 0) {
 				boss_Destroy(g->boss);
 				g->boss = NULL;
+				g->won = true;
 			}
 			return true;
 		}
@@ -63,6 +65,9 @@ bool bullet_Update(Bullet *b, Game *g, float dt) {
 				g->player->lives--;
 				g->player->power =
 				    (int)(g->player->power * 0.3f);
+			}
+			if (g->player->lives <= 0 && !g->immortal) {
+				g->lost = true;
 			}
 			return true;
 		}

@@ -17,7 +17,14 @@
 #include "token.h"
 
 static EnemyPattern randPattern(void) {
-	return (EnemyPattern)GetRandomValue(0, 2);
+	/* weighted: 0-3 circle, 4-7 star, 8-9 tracker */
+	int r = GetRandomValue(0, 9);
+	if (r < 4)
+		return EPAT_CIRCLE;
+	else if (r < 8)
+		return EPAT_STAR;
+	else
+		return EPAT_TRACKER;
 }
 
 static void spawnSideEnemy(Game *g) {
@@ -34,10 +41,13 @@ static void spawnSideEnemy(Game *g) {
 	g->enemies[g->enemyCount++] = enemy_Create(pos, randPattern(), vel);
 }
 
-void danmaku_Init(Game *g) {
+void danmaku_Init(Game *g, bool immortal) {
 	*g = (Game){0};
 	g->player = player_Create((Vector2){240, 680});
 	g->boss = NULL;
+	g->won = false;
+	g->lost = false;
+	g->immortal = immortal;
 }
 
 static void updateArrays(Game *g, float dt) {
@@ -68,7 +78,12 @@ static void updateArrays(Game *g, float dt) {
 		}
 	}
 
-	if (g->boss) boss_Update(g->boss, g, dt);
+	if (g->boss)
+		boss_Update(g->boss, g, dt);
+	else if (!g->won && g->player->power >= 300) {
+	} else if (!g->boss && !g->won && g->player->power >= 300) {
+		g->won = true;
+	}
 }
 
 static void drawArrays(Game *g) {
@@ -96,9 +111,23 @@ static void drawHUD(Game *g) {
 	sprintf(buf, "LIVES %d", g->player->lives);
 	DrawText(buf, 480 - margin - MeasureText(buf, 16), margin + 40, 16,
 	         MAROON);
+
+	if (g->won) {
+		const char *msg = "YOU WIN!";
+		int w = MeasureText(msg, 40);
+		DrawText(msg, (480 - w) / 2, 320, 40, DARKGREEN);
+	}
+
+	if (g->lost) {
+		const char *msg = "YOU LOSE!";
+		int w = MeasureText(msg, 40);
+		DrawText(msg, (480 - w) / 2, 320, 40, MAROON);
+	}
 }
 
 void danmaku_Update(Game *g, float dt) {
+	if (g->won || g->lost) return;
+
 	static float enemyTimer = 0.0f;
 	enemyTimer -= dt;
 	if (enemyTimer <= 0.0f) {
@@ -106,7 +135,7 @@ void danmaku_Update(Game *g, float dt) {
 		enemyTimer = 1.5f;
 	}
 
-	if (!g->boss && g->player->power >= 300) {
+	if (!g->boss && !g->won && g->player->power >= 300) {
 		g->boss = boss_Create((Vector2){240, 80});
 	}
 

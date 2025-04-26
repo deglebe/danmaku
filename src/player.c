@@ -13,7 +13,7 @@
 #include "bullet.h"
 
 #define SPEED 240.0f
-#define FIRE_BASE_RATE 0.5f /* 2 bullets per second */
+#define FIRE_BASE_RATE 0.3f /* 2 bullets per second */
 #define FIRE_RATE_STEP 0.1f /* after 500 power every 100 -> +1/s */
 
 static const float PLAYER_SCALE = 1.0f;
