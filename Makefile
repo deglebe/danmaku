@@ -1,6 +1,9 @@
-CC	= gcc
+CC	= zig cc
 STD	= c99
-CFLAGS	= -std=$(STD) -Wall -Wextra -pedantic -I./src
+CFLAGS	= -std=$(STD) \
+	  -Os -ffunction-sections -fdata-sections -fno-asynchronous-unwind-tables \
+	  -Wall -Wextra -pedantic -I./src \
+	  -march=native
 LDFLAGS	= -lraylib -lm -ldl -lpthread -lrt -lX11 -lGL
 SRC	= $(wildcard src/*.c)
 OBJ	= $(SRC:.c=.o)

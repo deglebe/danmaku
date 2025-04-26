@@ -1,0 +1,50 @@
+danmaku
+
+minimal raylib-powered danmaku shooter
+- lightweight (76KB excluding libraries, 849KB binary, stripped, zig cc)
+- c99 (no atomics or C11 convenience. code like the 90s)
+- POSIX make build process
+- zero additional deps
+
+project layout
+src/    one .c/.h pair per module
+        - main.c        entry
+        - game.[ch]     loop + entity arrays
+        - assets.[ch]   texture loader
+        - player / enemy / boss
+        - bullet / token
+res/    textures
+Makefile
+
+core entities
+- player, enemy, boss
+- bullet, token
+
+entities are stored in fixed-size arrays
+hit-circles for collisions detection, radii constant per sprite
+
+player mechanics
+- 3 lives (unless immortal)
+- guns scale: 1 -> 3 as power hits 200, 300
+- hold-fire for shooting every 0.3 seconds (infinite speed tapping)
+- score + power tokens boost points
+- death -> lose 70% of power
+
+enemy waves
+- spawn in 1.5s offscreen
+- drift in
+- shoot bullets
+- 5 hits -> death. drops token on death
+
+bullet patterns
+- star (5 bullets)
+- circle (16 bullets)
+- tracker (20% chance, vector assigned based on player position)
+
+boss fight
+- appears at power >= 300
+- 200HP
+- sidesteps +- 40px every 30HP drained
+
+demo
+
