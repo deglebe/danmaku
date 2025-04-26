@@ -1,0 +1,60 @@
+danmaku implementation notes (goals)
+
+entities:
+- player
+- enemy
+- boss
+- bullets
+- tokens
+
+player entity has a few data fields:
+- score (integer, point value)
+	- collected by picking up point tokens
+- power (integer, score value)
+	- collected by picking up power tokens
+- guns
+	- player starts with 1 gun
+	- gains a second gun at 200 power, a third at 500 power
+	- base firing rate is 2 bullets/second on hold, no speed cap on press
+	- at 500 power, the firing rate increases by 1/sec for every 100 power
+- lives
+	- player has three lives
+	- if player dies, its power becomes pow = (current power * 0.3)
+	- if it loses all three lives, game ends
+
+the player can move all direction x, y, but is bounded by the playfield
+the player should die if it collides with a bullet
+
+enemies shoot bullets
+bullets come in circle or star patterns
+	- circle patterns are a circle comprised of 16 bullets shot out from
+	  the enemy that travel away from the enemy
+	- star patterns are lines of bullets that shoot away from the enemy
+bullets can also be "tracker" bullets that are assigned a directional vector
+toward the player at instance of being spawned, and move in that direction. if
+the player moves, it does not follow the player.
+enemies can survive 5 bullet shots from the player and are immune to the bullets
+of other enemies
+enemies need to be assigned what type of bullet pattern/mode they shoot
+enemies move in all directions but eventually make their way to the bottom of
+the screen where they disappear. 
+
+the boss dies after 200 bullet impacts from player bullets
+it shoots circles and stars and tracker bullets
+the boss does not disappear, it has to be killed by the player
+on death, the player wins
+
+bullets are small orbs that shoot from enemies, players, or the boss
+green bullets are regular, red are trackers, blue come from the player
+these should be stored as three pngs
+bullets disappear once hitting the bounds of the game
+
+tokens are small rectangles that drop when enemies die and slowly fall to the
+bottom of the playfield
+red tokens are score tokens, blue are power tokens
+if a player collides with the token, it should disappear and the value of the
+token is applied to score or power respectively
+
+
+
+
