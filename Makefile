@@ -1,4 +1,4 @@
-CC	= zig cc
+CC	= gcc
 STD	= c99
 CFLAGS	= -std=$(STD) \
 	  -Os -ffunction-sections -fdata-sections -fno-asynchronous-unwind-tables \

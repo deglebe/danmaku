@@ -22,8 +22,8 @@ static void firePattern(struct Boss *b, int pattern, struct Game *g) {
 	switch (pattern) {
 	/* circle */
 	case 0: {
-		for (int i = 0; i < 16 && g->bulletCount < MAX_BULLETS; ++i) {
-			float a = (2 * PI / 16) * i;
+		for (int i = 0; i < 32 && g->bulletCount < MAX_BULLETS; ++i) {
+			float a = (2 * PI / 32) * i;
 			Vector2 v = {cosf(a) * 200, sinf(a) * 200};
 			g->bullets[g->bulletCount++] =
 			    bullet_Create(b->pos, v, BT_ENEMY);
@@ -62,14 +62,23 @@ Boss *boss_Create(Vector2 p) {
 void boss_Update(Boss *b, Game *g, float dt) {
 	b->shootTimer -= dt;
 	if (b->shootTimer <= 0) {
-		firePattern(b, GetRandomValue(0, 2), g);
-		b->shootTimer = RELOAD_TIME;
+		int pattern = GetRandomValue(0, 2);
+		int times = GetRandomValue(1, 5);
+		if (pattern == 0) {
+			for (int i = 0; i < times; i++) {
+				firePattern(b, pattern, g);
+				b->shootTimer = RELOAD_TIME;
+			}
+		} else {
+			firePattern(b, pattern, g);
+			b->shootTimer = RELOAD_TIME;
+		}
 	}
 
 	/* sidestep */
 	if (b->hp <= b->nextShiftHP) {
 		float dir = GetRandomValue(0, 1) ? 1.0f : -1.0f;
-		b->pos.x = Clamp(b->pos.x + dir * SHIFT_STEP, 40.0f, 440.0f);
+		b->pos.x = Clamp(b->pos.x + dir * SHIFT_STEP, 70.0f, 440.0f);
 		b->nextShiftHP -= 30;
 	}
 }

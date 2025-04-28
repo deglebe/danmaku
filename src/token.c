@@ -15,8 +15,8 @@
 
 #define TOKEN_SPEED 60.0f
 #define SCORE_VALUE 20
-#define POWER_VALUE 15
-#define TOKEN_SIZE 8
+#define POWER_VALUE 20
+#define TOKEN_SIZE 12
 
 static Rectangle boundsFromPos(Vector2 p) {
 	return (Rectangle){p.x - TOKEN_SIZE / 2.0f, p.y - TOKEN_SIZE / 2.0f,
