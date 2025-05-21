@@ -1,7 +1,7 @@
 /* src/game.c
  * main game functions
  * by: thomas bruce
- * date: 26/04/2025
+ * date: 21/05/2025
  */
 
 #include "game.h"
@@ -96,32 +96,32 @@ static void drawArrays(Game *g) {
 	if (g->boss) boss_Draw(g->boss);
 }
 
-static void drawHUD(Game *g) {
+void danmaku_Draw(Game *g) { drawArrays(g); }
+
+void danmaku_DrawHUD(Game *g, int x, int y) {
 	const int margin = 8;
 	char buf[64];
 
+	// draw score, power, and lives
 	sprintf(buf, "SCORE %d", g->player->score);
-	DrawText(buf, 480 - margin - MeasureText(buf, 16), margin, 16,
-	         DARKGRAY);
+	DrawText(buf, x + margin, y + margin, 16, DARKGRAY);
 
 	sprintf(buf, "POWER %d", g->player->power);
-	DrawText(buf, 480 - margin - MeasureText(buf, 16), margin + 20, 16,
-	         DARKBLUE);
+	DrawText(buf, x + margin, y + margin + 20, 16, DARKBLUE);
 
 	sprintf(buf, "LIVES %d", g->player->lives);
-	DrawText(buf, 480 - margin - MeasureText(buf, 16), margin + 40, 16,
-	         MAROON);
+	DrawText(buf, x + margin, y + margin + 40, 16, MAROON);
 
 	if (g->won) {
 		const char *msg = "YOU WIN!";
 		int w = MeasureText(msg, 40);
-		DrawText(msg, (480 - w) / 2, 320, 40, DARKGREEN);
+		DrawText(msg, x + (200 - w) / 2, y + 320, 40, DARKGREEN);
 	}
 
 	if (g->lost) {
 		const char *msg = "YOU LOSE!";
 		int w = MeasureText(msg, 40);
-		DrawText(msg, (480 - w) / 2, 320, 40, MAROON);
+		DrawText(msg, x + (200 - w) / 2, y + 320, 40, MAROON);
 	}
 }
 
@@ -140,11 +140,6 @@ void danmaku_Update(Game *g, float dt) {
 	}
 
 	updateArrays(g, dt);
-}
-
-void danmaku_Draw(Game *g) {
-	drawArrays(g);
-	drawHUD(g);
 }
 
 void danmaku_Shutdown(Game *g) {

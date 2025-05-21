@@ -1,7 +1,7 @@
 /* src/game.h
  * game struct and entity limiters
  * by: thomas bruce
- * date: 26/04/2025
+ * date: 21/05/2025
  */
 
 #ifndef GAME_H
@@ -29,6 +29,7 @@ typedef struct Game {
 void danmaku_Init(Game *g, bool immortal);
 void danmaku_Update(Game *g, float dt);
 void danmaku_Draw(Game *g);
+void danmaku_DrawHUD(Game *g, int x, int y);
 void danmaku_Shutdown(Game *g);
 
 #endif
